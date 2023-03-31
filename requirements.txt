@@ -1,0 +1,2 @@
+dataproc_sdk==0.3.10.3.1
+cryptography==3.4.8
