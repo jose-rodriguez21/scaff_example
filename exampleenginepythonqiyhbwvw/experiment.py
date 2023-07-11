@@ -5,7 +5,7 @@ from dataproc_sdk.dataproc_sdk_utils.logging import get_user_logger
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, when, avg, lit
 
-from exampleenginepythonqiyhbwvw.businesslogic.business_logic import BusinessLogic
+from exampleenginepythonqiyhbwvw.bussineslogic.business_logic import BusinessLogic
 from exampleenginepythonqiyhbwvw.io.init_values import InitValues, InitValuesPyC
 
 import exampleenginepythonqiyhbwvw.common.constants as c
