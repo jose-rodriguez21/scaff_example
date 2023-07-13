@@ -45,8 +45,8 @@ class BusinessLogic:
         listNotCodeCountry = [c.CODE_CH, c.CODE_IT, c.CODE_CZ, c.CODE_DK]
 
         return df.filter(i.cutoff_date().isin(listDates))\
-                    .filter(~i.brand().isin(listNotMarcas))\
-                    .filter(~i.country_code().isin(listNotCodeCountry))
+                 .filter(~i.brand().isin(listNotMarcas))\
+                 .filter(~i.country_code().isin(listNotCodeCountry))
 
     def rule_two(self, df: DataFrame) -> DataFrame:
         self.__logger.info("Filtrado entre fechas 2020-03-01 y 2020-03-04,")
@@ -54,7 +54,8 @@ class BusinessLogic:
 
         listDates = [c.MARZO_01, c.MARZO_02, c.MARZO_03, c.MARZO_04]
 
-        return df.filter(i.gl_date().isin(listDates)).filter(length(i.credit_card_number.name) < c.SEVENTEEN_NUMBER)
+        return df.filter(i.gl_date().isin(listDates))\
+                 .filter(length(i.credit_card_number.name) < c.SEVENTEEN_NUMBER)
 
 
     def rule_three(self, customers_df:DataFrame, phones_df: DataFrame) -> DataFrame:
@@ -63,7 +64,8 @@ class BusinessLogic:
 
     def rule_four(self, df: DataFrame) -> DataFrame:
         self.__logger.info("Filtrado por clientes vip")
-        return df.select(*df.columns, ((i.prime() == c.YES_VALUE) & (i.price_product() > c.FILTER_PRICE_NUMBER)).alias(o.customer_vip.name))\
+        return df.select(*df.columns, ((i.prime() == c.YES_VALUE) &
+                                       (i.price_product() > c.FILTER_PRICE_NUMBER)).alias(o.customer_vip.name))\
                  .select(*df.columns, when(o.customer_vip() == c.TRUE_VALUE, c.YES_VALUE)\
                                      .when(o.customer_vip() == c.FALSE_VALUE, c.NO_VALUE)\
                                      .alias(o.customer_vip.name))
@@ -74,14 +76,15 @@ class BusinessLogic:
         listNotMarcas = ["XOLO", "Siemens", "Panasonic", "BlackBerry"]
 
         return df.select(*df.columns, when((i.prime() == c.YES_VALUE) & (i.stock_number() < c.THIRTY_FIVE_NUMBER), round(i.price_product()*0.1, 2))
-                                     .when((col("prime") == "No") & (i.stock_number() >= c.THIRTY_FIVE_NUMBER), i.price_product()*0.0)
+                                     .when((i.prime() == c.NO_VALUE) & (i.stock_number() >= c.THIRTY_FIVE_NUMBER), i.price_product()*0.0)
                                      .otherwise(0.0)
                                      .alias(o.extra_discount.name)) \
                                      .filter(~i.brand().isin(listNotMarcas))
 
     def rule_six(self, df: DataFrame) -> DataFrame:
         self.__logger.info("Calculadon el precio final")
-        return df.select(*df.columns, round(i.price_product()+i.taxes()-i.discount_amount()-o.extra_discount(), 2).alias(o.final_price.name))
+        return df.select(*df.columns, round(i.price_product()+i.taxes()-i.discount_amount()-o.extra_discount(), 2)
+                                                                                            .alias(o.final_price.name))
 
     def rule_seven(self, df: DataFrame) -> DataFrame:
         self.__logger.info("Top 50")
