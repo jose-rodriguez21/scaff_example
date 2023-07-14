@@ -33,6 +33,9 @@ class Main:
         ret_code = 0
         parameters = {}
 
+        config = runtimeContext.getConfig()
+        print("Desarrollador: " + config.getString("Params.devName"))
+
         # PART 1 - READ FROM CONFIGURATION
         # Reading config file for input and output paths
         try:
